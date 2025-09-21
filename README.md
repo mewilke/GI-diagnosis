@@ -45,7 +45,9 @@ Fecal_Calprotectin: Inflammatory marker found in stool; high levels may indicate
 
 Occult_Blood_Test: Results of fecal occult blood testing (Positive/Negative).
 
-CRP_ESR: Combined result of C-Reactive Protein and Erythrocyte Sedimentation Rate – inflammation indicators.
+CRP_ESR: Combined result of C-Reactive Protein and Erythrocyte Sedimentation Rate – inflammation indicators. The CRP/ESR ratio is a combination of measures of inflamation.
+   High Ratio (> 2) may point towards acute inflammation or bacterial infection.
+   Low Ratio (< 1) may suggest chronic inflammation or autoimmune conditions.
 
 **Diagnostic Results**
 
@@ -97,12 +99,13 @@ NSAID_Use: Use of Non-Steroidal Anti-Inflammatory Drugs (Yes/No).
 
 Antibiotic_Use: Recent use of antibiotics (Yes/No).
 
-PPI_Use: Use of Proton Pump Inhibitors (Yes/No).
+PPI_Use: Use of Proton Pump Inhibitors (Yes/No). PPI (proton pump inhibitors) are a class of medications that reduce the production of stomach acid.
 
 Medications: Other medications currently being taken.
 
 **Target Variable**
 
 Disease_Class: Final disease classification (e.g., Crohn’s Disease, Ulcerative Colitis, IBS, Healthy).
+
 
 
