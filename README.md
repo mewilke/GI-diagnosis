@@ -95,21 +95,25 @@ The text features were converted to numeric values. Ethnicity, Diet_Type, and Bo
 At this point there were 47 features and 1 target with 6 categories. 
 ### Data Analysis
 A correlation matrix was calculated. Note that the highest correlation with the target was only 0.01. Some of the features had high correlations with each other. These were culled later by LASSO and the correlation values. 
+![Full Correlation Matrix Image](output/big_correlation_matrix.png)
  
 The data were split into the features (X) and target (y) and then into training and test sets. 
 ### Principal Component Analysis
 Singular value decomposition indicates that 34 of the 47 projected features contain 80% of the signal in the data. Unfortunately, as will be seen, 80% of noise is still noise. 
- 
+ ![Principal Component Plot](output/PCA.png)
 The elbows in the singular value plot below indicate there are about 3 main components, 8 important components, and 42 additional components depending on the percent Singular Value chosen as a cutoff.
- 
+ ![Percent Principal Component Plot](output/percent_PCA.png)
 
 ## Feature Engineering
-LASSO was employed to simplify the models to the most important features. The feature data were scaled and the best lambda (c) was determined. The c value was bracketed for logistic regression and plotted. The output shows noise. However, the algorithm did pick 6 features. These are shown in the legend and are used to make all the future models. Note that running the analyses with all the features produced similar results which will not shown.
- 
-Because some of the features are closely related (BMI, Body_Weight, and Obesity_Status) a correlation matrix was calculated. 
+LASSO was employed to simplify the models to the most important features. The feature data were scaled and the best lambda (c) was determined. The c value was bracketed for logistic regression and plotted. The output shows noise. However, the algorithm did pick 6 features. These are shown in the legend and are used to make all the future models. Note that running the analyses with all the features produced similar results which will not be shown.
+![LASSO Plot](output/LASSO.png)
+
+Because some of the features are closely related (BMI, Body_Weight, and Obesity_Status) a correlation matrix was calculated.
+![Small Correlation Matrix](output/small_correlation_matrix.png)
  
 BMI was dropped because it has a correlation of 0.94 with Obesity_Status, 0.75 with Body Weight and only -0.000078 with the target. Obesity_Status was also dropped because it has a correlation of 0.75 with Body_Weight and only .00083 with the target. Body_Weight was kept because it has the best correlation coefficient of with the target at 0.0033.
-It can also be seen visually from the pair plot that the signal is very weak or non-existent. 
+It can also be seen visually from the pairplot that the signal is very weak or non-existent. 
+![Pairplot](output/pairplot.png)
  
 A subset of the data consisting of the top 4 features and the disease class target was split into features and target and then into training and test sets.
 ## Classification
@@ -118,6 +122,7 @@ Several classification algorithms were tried including nearest neighbors, decisi
 The K Nearest Neighbors (KNN) algorithm was tried but was too CPU intensive to tune for ersatz science. One cycle takes about 0.09 seconds. There are 30,560 rows and 4 feature columns. Training takes hours. Note that one cycle of KNN with n_neighbors = 3 produced the highest accuracy score of any of the models at 0.1741. However, this is random (0.1667) and may indicate some overfitting.
 ### Decision Trees
 Four different grid search algorithms were tried before tuning the decision tree hyperparameters. HalvingRandomSearchCV produced the best results. However, the random aspect of this algorithm produces variable results. GridSearchCV was used for the final tuning. A tree graph of the results shows only 3 of the 4 or 6 target categories. Adding depth does not discriminate among the categories in any meaningful way. Already the number of samples is small for “Nausea or vomiting.” While adding more splits (depth) does not break the 10,000+ samples in two of the categories into around 5,000 as expected. This behavior would be expected if the target classes were assigned randomly.
+![Decision Tree](output/decision_tree.png)
  
 ### Random Forest
 For random forest the max_features hyperparameter was tuned with the number of estimators held at 100 to keep the runtime to a minimum. The optimal max_features was 1. When the estimators were set to 1000 the accuracy was 0.1711. The estimators could be tuned further but probably will not improve the accuracy significantly. The accuracy at 100 estimators was 0.1724. The Out-of-Bag score was 0.1691.
@@ -126,25 +131,28 @@ Boosting or boot strapping is an ensemble method that sequentially trains models
 ### Naïve Bayes
 Naïve Bayes predicts the probability of each category in the target based on each feature. The features most relevant for predicting the disease state are Family History and Gender. The accuracy is still too low to be useful at 0.1672.
 Probability of Features Predicting Classes by Naïve Bayes
-Body_Weight	Gender	Age	Family_History
--0.507289	-5.461731	-0.943103	-5.470209
--0.507886	-5.416463	-0.942603	-5.477791
--0.515287	-5.430038	-0.930984	-5.491315
--0.511433	-5.406763	-0.937103	-5.492682
--0.510909	-5.454801	-0.937270	-5.501993
--0.504637	-5.455063	-0.947108	-5.487135
+
+| Body_Weight |	Gender	Age	| Family_History |
+|:-----------:|:----------:|:--------------:|
+|-0.507289	|-5.461731	|-0.943103	|-5.470209|
+|-0.507886	|-5.416463	|-0.942603	|-5.477791|
+|-0.515287	|-5.430038	|-0.930984	|-5.491315|
+|-0.511433	|-5.406763	|-0.937103	|-5.492682|
+|-0.510909	|-5.454801	|-0.937270	|-5.501993|
+|-0.504637	|-5.455063	|-0.947108	|-5.487135|
 
 ### Neural networks
 A model was created using standard parameters (optimizer='adam', neurons=4, activation='relu', input_dim=4). Tuning was done for each parameter individually to reduce the time needed to run the code. The optimal hyperparameters were a batch size of 2, with 4 epochs, and 4 neurons. Additional layers were added sequentially but did not improve the validation accuracy beyond 0.1585. 
 ### Classification comparison
 The statistics for all the classification algorithms are shown in the table below. Recalling that a random accuracy score would be 1/6 = 0.1667, it is clear there is no signal in these data.
-Algorithm	Accuracy	Precision	Recall	F1
-KNN	0.174084	0.167347	0.174084	0.157847
-Decision Tree	0.170812	0.086018	0.170812	0.108072
-Random Forest	0.172448	0.172856	0.172448	0.172514
-Boosting	0.169993	0.170260	0.169993	0.169957
-Naive Bayes	0.167212	0.175197	0.167212	0.105742
-Neural Network	0.169339	0.028676	0.169339	0.049046
+| Algorithm	| Accuracy |	Precision |	Recall |	F1|
+|:---:|:---:|:---:|:---:|:---:|
+|KNN	|0.174084	|0.167347	|0.174084	|0.157847|
+|Decision Tree	|0.170812	|0.086018	|0.170812	|0.108072|
+|Random Forest |0.172448	|0.172856	|0.172448	|0.172514|
+|Boosting	|0.169993	|0.170260	|0.169993	|0.169957|
+|Naive Bayes	|0.167212	|0.175197	|0.167212	|0.105742|
+|Neural Network	|0.169339	|0.028676	|0.169339	|0.049046|
 
 ## Clustering
 To understand why the data are not classified as expected, clustering was done using Kmeans and DBSCAN. 
@@ -168,4 +176,6 @@ There may be other questions that can be answered using this dataset such as pre
 ### Pretrained libraries
 The goal is to find target classes like those described in the GI dataset and attempt to predict the target classes based on the GI feature data. Hopefully, the Kaggle GI dataset target was not included in any large models. 
 Some work was done to locate a model that contains the unadulterated target classes. Delph-2M is a pretrained model that was tried but abandoned because it contains synthetic data.  "The original Delphi-2M model was trained on sensitive medical data from the UK Biobank, which is not publicly available. The provided GitHub repository includes a synthetic dataset for demonstration and research purposes."
+
 "MedGemma 27B is only available as an instruction-tuned model." Despite the instruction tuning, medgemma-27b-text-it was downloaded from https://huggingface.co/google/medgemma-27b-text-it. This version of the model has no images and thus takes less disk space than the full dataset. It still used all the free disk space in the Colab account. There was insufficient RAM to run the code. Certainly, these could be purchased if the need were greater. The neural net would need to be trained gently to the GI features before evaluating the results.
+
